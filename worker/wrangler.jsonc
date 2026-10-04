@@ -1,0 +1,14 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "track-api",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-03",
+  "kv_namespaces": [{ "binding": "STRAVA_TOKENS", "id": "995085e6864848228cbb741a9522472d" }],
+  "vars": {
+    "APP_URL": "https://track.jamestd.co.uk",
+    "ALLOWED_ORIGINS": "https://track.jamestd.co.uk,http://localhost:5173",
+    "STRAVA_REDIRECT_URI": "https://api.track.jamestd.co.uk/api/strava/callback",
+    "FIREBASE_API_KEY": "AIzaSyBdrqbNw6o3LWkBALlX2t6B1Z8O_NCdY8Q"
+  },
+  "routes": [{ "pattern": "api.track.jamestd.co.uk", "custom_domain": true }]
+}

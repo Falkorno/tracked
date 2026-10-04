@@ -1,0 +1,13 @@
+export const todayKey = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
+export const weekDates = () => { const start=new Date(); start.setHours(12,0,0,0); start.setDate(start.getDate()-((start.getDay()+6)%7)); return Array.from({length:7},(_,i)=>{const d=new Date(start);d.setDate(d.getDate()+i);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}); };
+export const categoryColors={running:'#1b998b',cycling:'#3b82f6',strength:'#ff8811',wellness:'#8b5cf6'};
+export const defaultHabits=[
+  {id:'habit-running',name:'Run outdoors',category:'running',color:categoryColors.running,targetPerWeek:3,completedDates:[]},
+  {id:'habit-cycling',name:'Ride the bike',category:'cycling',color:categoryColors.cycling,targetPerWeek:2,completedDates:[]},
+  {id:'habit-strength',name:'Strength training',category:'strength',color:categoryColors.strength,targetPerWeek:3,completedDates:[]}
+];
+export function categoryFor(habit){if(['running','cycling','strength','wellness'].includes(habit.category))return habit.category;const name=String(habit.name||'').toLowerCase();if(/run|jog/.test(name))return'running';if(/cycl|bike|ride/.test(name))return'cycling';if(/strength|gym|lift|weight/.test(name))return'strength';return'wellness'}
+export function normalizeHabit(habit){const category=categoryFor(habit),week=weekDates();let completedDates=Array.isArray(habit.completedDates)?habit.completedDates.filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d)):[];if(!completedDates.length&&Array.isArray(habit.week))completedDates=habit.week.flatMap((done,i)=>done?[week[i]]:[]);if(habit.completedToday&&!completedDates.includes(todayKey()))completedDates.push(todayKey());return{id:String(habit.id||crypto.randomUUID()),name:String(habit.name||'Untitled habit'),category,color:habit.color||categoryColors[category],targetPerWeek:Math.min(7,Math.max(1,Number(habit.targetPerWeek??habit.target??3))),completedDates:[...new Set(completedDates)].sort()}}
+export const isDoneToday=(habit)=>habit.completedDates.includes(todayKey());
+export function toggleDate(habit,date=todayKey()){return{...habit,completedDates:habit.completedDates.includes(date)?habit.completedDates.filter(item=>item!==date):[...habit.completedDates,date].sort()}}
+export function streakFor(habit,date=todayKey()){const dates=new Set(habit.completedDates),cursor=new Date(`${date}T12:00:00`);let count=0;while(dates.has(`${cursor.getFullYear()}-${String(cursor.getMonth()+1).padStart(2,'0')}-${String(cursor.getDate()).padStart(2,'0')}`)){count++;cursor.setDate(cursor.getDate()-1)}return count}

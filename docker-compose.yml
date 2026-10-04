@@ -1,0 +1,7 @@
+services:
+  track:
+    build: .
+    container_name: track
+    restart: unless-stopped
+    ports:
+      - "8080:80"

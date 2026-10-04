@@ -1,0 +1,9 @@
+node_modules
+dist
+.git
+.tools
+.wrangler
+old-stride-app
+fitplan-main.zip
+.env*
+worker/.dev.vars*

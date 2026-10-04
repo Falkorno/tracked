@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-stride-navy: #2d3047;
+  --color-stride-teal: #1b998b;
+  --color-stride-orange: #ff8811;
+  --color-stride-cream: #fffdf7;
+  --color-stride-card: #f5f5f5;
+  --font-sans: Inter, sans-serif;
+  --shadow-phone: 0 20px 50px rgba(45,48,71,.12);
+}
+
+html { background: #e5e5e5; }
+body { min-width: 320px; min-height: 100vh; margin: 0; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; }
+button:disabled { cursor: default; opacity: .6; }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }

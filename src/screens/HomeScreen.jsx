@@ -1,0 +1,23 @@
+import { Bike, Check, ChevronRight, Dumbbell, Flame, PersonStanding } from 'lucide-react';
+import { useApp } from '../AppContext';
+import { weekDates } from '../habit-model';
+import { Header } from '../components/Shell';
+
+const accent={running:'bg-stride-teal border-stride-teal',cycling:'bg-blue-500 border-blue-500',strength:'bg-stride-orange border-stride-orange',wellness:'bg-purple-500 border-purple-500'};
+
+export default function HomeScreen({openHabits}) {
+  const {habits,toggleHabit,syncState}=useApp();
+  const days=weekDates();
+  return <>
+    <Header title="Track" action={<div className="flex min-h-11 items-center gap-1.5 rounded-[10px] bg-orange-50 px-3 text-[11px] font-bold text-stride-orange"><Flame className="h-3.5 w-3.5 fill-current"/>5 day streak</div>}/>
+    <section className="mt-4"><div className="mb-2.5"><h2 className="text-[17px] font-extrabold">Today</h2><p className="text-[11px] font-medium text-stride-navy/45">2 sessions · 1 hr 30 min</p></div><div className="space-y-2.5"><Workout icon={Dumbbell} title="Chest & Triceps" detail="Strength workout · 45 min"/><Workout icon={Bike} title="Easy Ride: 20km" detail="Endurance ride · 45 min"/></div></section>
+    <section className="mt-4"><h2 className="text-[17px] font-extrabold">Weekly focus</h2><div className="mt-2 grid grid-cols-3 gap-2"><Metric icon={Dumbbell} value="7/10" label="Workouts"/><Metric icon={PersonStanding} value="16.5/40" label="Run km"/><Metric icon={Bike} value="36.5/80" label="Ride km"/></div></section>
+    <section className="mt-4"><div className="flex items-center justify-between"><div><p className="text-[9px] font-extrabold uppercase tracking-[.12em] text-stride-teal">HABITS · THIS WEEK</p><h2 className="text-[17px] font-extrabold">Small actions, repeated</h2></div><button onClick={openHabits} className="flex min-h-11 items-center text-[11px] font-bold text-stride-teal">Manage<ChevronRight className="h-4 w-4"/></button></div><div className="rounded-[16px] border border-stride-navy/5 bg-white px-2.5 py-2"><div className="grid grid-cols-[minmax(72px,1fr)_repeat(7,1fr)] items-center gap-1">{['','M','T','W','T','F','S','S'].map((day,i)=><span key={i} className="text-center text-[9px] font-bold text-stride-navy/40">{day}</span>)}{habits.slice(0,5).map(habit=><HabitWeekRow key={habit.id} habit={habit} days={days} toggleHabit={toggleHabit}/>)}</div>{syncState==='error'&&<p className="mt-2 text-[9px] font-semibold text-red-500">Saved locally — cloud sync will retry.</p>}</div></section>
+    <section className="mt-4"><h2 className="text-[17px] font-extrabold">Last workout</h2><article className="mt-2 flex min-h-[64px] items-center rounded-[16px] border border-stride-navy/5 bg-white p-2.5"><span className="grid h-10 w-10 place-items-center rounded-[10px] bg-orange-100 text-stride-orange"><Dumbbell className="h-[18px] w-[18px]"/></span><div className="ml-2.5 min-w-0 flex-1"><p className="truncate text-[12px] font-bold">Chest & Triceps</p><p className="text-[10px] font-medium text-stride-navy/40">42 min · 7 exercises · Completed</p></div><ChevronRight className="h-4 w-4 text-stride-navy/25"/></article></section>
+  </>;
+}
+
+function HabitWeekRow({habit,days,toggleHabit}) { const todayIndex=(new Date().getDay()+6)%7; return <>{<span className="truncate py-1 text-[10px] font-bold">{habit.name}</span>}{days.map((date,index)=>index===todayIndex?<button key={date} onClick={()=>toggleHabit(habit.id,date)} aria-label={`Toggle ${habit.name}`} className="mx-auto grid h-7 w-7 place-items-center"><Dot habit={habit} date={date}/></button>:<Dot key={date} habit={habit} date={date}/>)}</>; }
+function Dot({habit,date}) { return <span className={`mx-auto h-4 w-4 rounded-full border-2 ${habit.completedDates.includes(date)?accent[habit.category]:'border-stride-navy/20'}`}/>; }
+function Workout({icon:Icon,title,detail}){return <article className="flex min-h-[72px] items-center rounded-[16px] bg-stride-card p-2.5"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-[12px] bg-stride-orange text-white"><Icon className="h-5 w-5"/></span><div className="ml-2.5 min-w-0 flex-1"><div className="flex justify-between gap-2"><h3 className="truncate text-[14px] font-extrabold">{title}</h3><span className="text-[9px] font-bold text-stride-teal">DONE</span></div><p className="mt-1 text-[11px] font-semibold text-stride-navy/45">{detail}</p></div><Check className="h-4 w-4 text-stride-teal"/></article>}
+function Metric({icon:Icon,value,label}){return <article className="rounded-[16px] bg-stride-card p-2.5"><Icon className="h-4 w-4 text-stride-teal"/><p className="mt-2 text-[14px] font-extrabold">{value}</p><p className="text-[9px] font-semibold text-stride-navy/40">{label}</p></article>}
